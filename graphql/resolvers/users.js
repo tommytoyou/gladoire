@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { userInputError, UserInputError } = require('apollo-server');
+
 
 const { SECRET_KEY } = require('../../config');
 const User = require('../../models/User');
@@ -9,13 +11,21 @@ module.exports = {
         async register(
             _, 
             {
-            RegisterInput: { email, username, password, confirmPassword }
+            RegisterInput: { email, username, password }
             }, 
             context, 
             info
             ){
             // here I will validate user data
             //and make sure user doesnt already exist
+            const user = User.FindOne({username});
+            if(user){
+                    throw new UserInputError('n This username is taken', {
+                        errors: {
+                            username: 'This username is taken'
+                        }
+                    })
+            }
             //Hash the password auth token
             password = await bcrypt.hash(password, 12);
 
