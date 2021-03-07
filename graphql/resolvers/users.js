@@ -17,14 +17,14 @@ module.exports = {
             info
             ){
             // here I will validate user data
-            const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword)
+            const { valid, errors } = validateRegisterInput( username, email, password, confirmPassword);
             if(!valid){
                 throw new UserInputError('Errors', { errors })
             }
             //and make sure user doesnt already exist
-            const user = User.findOne({username});
+            const user = await User.findOne({username});
             if(user){
-                    throw new UserInputError('n This username is taken', {
+                    throw new UserInputError('This username is taken', {
                         errors: {
                             username: 'This username is taken'
                         }
